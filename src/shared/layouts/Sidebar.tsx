@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, ShoppingCart, ChefHat, Package, Users, Settings, 
-  CreditCard, CalendarClock, Truck, Sparkles, FileBarChart, Armchair, Factory
+  CreditCard, CalendarClock, Truck, Sparkles, FileBarChart, Armchair, Factory, Cloud
 } from 'lucide-react';
 import { useAuth } from '../../core/auth/AuthContext';
 
@@ -27,6 +27,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { name: 'HR & Payroll', to: '/hr', icon: CalendarClock, roles: ['OWNER', 'ADMIN', 'HR', 'MANAGER'] },
     { name: 'Reports & Analytics', to: '/reports', icon: FileBarChart, roles: ['OWNER', 'ADMIN', 'MANAGER', 'ACCOUNTANT'] },
     { name: 'AI Assistant', to: '/ai', icon: Sparkles, roles: ['OWNER', 'ADMIN'] },
+    { name: 'Google Cloud (gcloud)', to: '/settings?tab=gcloud', icon: Cloud, roles: ['OWNER', 'ADMIN'] },
     { name: 'Settings', to: '/settings', icon: Settings, roles: ['OWNER', 'ADMIN', 'MANAGER'] },
   ];
 

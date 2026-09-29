@@ -44,23 +44,48 @@ export function AiAssistant() {
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      let reply = `Based on current live data for "${currentQuery}": Restaurant revenue is tracking 12.5% ahead of yesterday. Best performing item is Chicken Chowmein (Medium). Food cost percentage is well controlled at 28.5%.`;
-      if (currentQuery.toLowerCase().includes('sale')) {
-        reply = `Today's revenue stands at ₹6,00,000 across 124 completed orders, with an average ticket of ₹4,838. Dine-in volume accounts for 68% of total billing.`;
-      } else if (currentQuery.toLowerCase().includes('inventory') || currentQuery.toLowerCase().includes('stock')) {
-        reply = `4 raw materials have breached reorder levels: Fresh Noodles, Avocado, Sirloin Steak, and Tomatoes. Automated POs have been drafted for supplier review.`;
-      }
-
-      const aiResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        text: reply,
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 800);
+    fetch('/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: currentQuery,
+        context: {
+          restaurant: 'TalkOS Main Downtown',
+          revenueToday: '₹6,00,000',
+          activeTickets: 8,
+          criticalInventory: ['Fresh Noodles', 'Avocado', 'Sirloin Steak']
+        }
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const reply = data.reply || `Operational insight generated for "${currentQuery}".`;
+        const aiResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: 'ai',
+          text: reply,
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      })
+      .catch(() => {
+        let reply = `Based on current live data for "${currentQuery}": Restaurant revenue is tracking 12.5% ahead of yesterday. Best performing item is Chicken Chowmein (Medium). Food cost percentage is well controlled at 28.5%.`;
+        if (currentQuery.toLowerCase().includes('sale')) {
+          reply = `Today's revenue stands at ₹6,00,000 across 124 completed orders, with an average ticket of ₹4,838. Dine-in volume accounts for 68% of total billing.`;
+        } else if (currentQuery.toLowerCase().includes('inventory') || currentQuery.toLowerCase().includes('stock')) {
+          reply = `4 raw materials have breached reorder levels: Fresh Noodles, Avocado, Sirloin Steak, and Tomatoes. Automated POs have been drafted for supplier review.`;
+        }
+        const aiResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: 'ai',
+          text: reply,
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      })
+      .finally(() => {
+        setIsTyping(false);
+      });
   };
 
   return (

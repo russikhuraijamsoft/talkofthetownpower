@@ -137,6 +137,10 @@ export const router = createBrowserRouter([
         element: <AdminPage />,
       },
       {
+        path: 'gcloud',
+        element: <Navigate to="/settings?tab=gcloud" replace />,
+      },
+      {
         path: '*',
         element: <Navigate to="/" replace />,
       }
